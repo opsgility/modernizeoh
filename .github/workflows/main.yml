@@ -1,6 +1,5 @@
 yaml
-Copy
-Edit
+
 name: Build and Deploy to Azure Web App Staging
 
 on:
