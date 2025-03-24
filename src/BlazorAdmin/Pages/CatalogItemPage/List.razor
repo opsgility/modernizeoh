@@ -1,0 +1,52 @@
+﻿@page "/catalog-items"
+@using BlazorAdmin.Pages.CatalogItemPage
+@* @inject ICatalogItemService CatalogItemService
+@inject ICatalogLookupDataService<CatalogBrand> CatalogBrandService
+@inject ICatalogLookupDataService<CatalogType> CatalogTypeService *@
+
+<h3>Catalog Items</h3>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Brand</th>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Picture</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in catalogItems)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@catalogBrands.FirstOrDefault(b => b.Id == item.CatalogBrandId)?.Name</td>
+                <td>@catalogTypes.FirstOrDefault(t => t.Id == item.CatalogTypeId)?.Name</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.PictureUri))
+                    {
+                        <img src="@item.PictureUri" alt="Picture" width="50" height="50" />
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-info btn-sm" @onclick="@(() => DetailsClick(item.Id))">Details</button>
+                    <button class="btn btn-primary btn-sm" @onclick="@(() => EditClick(item.Id))">Edit</button>
+                    <button class="btn btn-danger btn-sm" @onclick="@(() => DeleteClick(item.Id))">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button class="btn btn-success" @onclick="CreateClick">Create New Item</button>
+
+<!-- Component References -->
+<Edit @ref="EditComponent" Brands="@catalogBrands" Types="@catalogTypes" OnSaveClick="ReloadCatalogItems" />
+<Delete @ref="DeleteComponent" OnSaveClick="ReloadCatalogItems" />
+<Details @ref="DetailsComponent" />
+<Create @ref="CreateComponent" Brands="@catalogBrands" Types="@catalogTypes" OnSaveClick="ReloadCatalogItems" />
